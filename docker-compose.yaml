@@ -4,3 +4,13 @@ services:
       image: nginx:latest
       network_mode: host
       restart: always
+      
+    redis-stack:
+        container_name: qube-redis
+        image: promiseqube.azurecr.io/qube-redis:0.0.1
+        network_mode: host
+        volumes:
+            - redis-data:/data # Persistent data storage
+        restart: always
+        profiles:
+            - lite
