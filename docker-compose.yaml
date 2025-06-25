@@ -1,0 +1,6 @@
+services:
+    nginx:
+      container_name: nginx
+      image: nginx:latest
+      network_mode: host
+      restart: always
