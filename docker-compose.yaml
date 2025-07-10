@@ -21,8 +21,8 @@ services:
         container_name: camera-manager
         image: promiseqube.azurecr.io/camera-manager:0.0.1-b
         network_mode: host
-        depends_on:
-            - redis-stack
+        # depends_on:
+        #     - redis-stack
         restart: always
         
 volumes:
