@@ -12,5 +12,8 @@ services:
         volumes:
             - redis-data:/data # Persistent data storage
         restart: always
-        profiles:
-            - lite
+    mediamtx:
+        container_name: qube-mediamtx
+        image: promiseqube.azurecr.io/qube-mediamtx:0.0.1
+        network_mode: host
+        restart: always
