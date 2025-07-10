@@ -17,3 +17,6 @@ services:
         image: promiseqube.azurecr.io/qube-mediamtx:0.0.1
         network_mode: host
         restart: always
+
+volumes:
+    redis-data:
