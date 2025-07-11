@@ -1,17 +1,17 @@
 services:
-    nginx:
-      container_name: nginx
-      image: nginx:latest
-      network_mode: host
-      restart: always
+    # nginx:
+    #   container_name: nginx
+    #   image: nginx:latest
+    #   network_mode: host
+    #   restart: always
       
-    # redis-stack:
-    #     container_name: qube-redis
-    #     image: promiseqube.azurecr.io/qube-redis:0.0.1
-    #     network_mode: host
-    #     volumes:
-    #         - redis-data:/data # Persistent data storage
-    #     restart: always
+    redis-stack:
+        container_name: qube-redis
+        image: promiseqube.azurecr.io/qube-redis:0.0.1
+        network_mode: host
+        volumes:
+            - redis-data:/data # Persistent data storage
+        restart: always
     mediamtx:
         container_name: qube-mediamtx
         image: promiseqube.azurecr.io/qube-mediamtx:0.0.1
