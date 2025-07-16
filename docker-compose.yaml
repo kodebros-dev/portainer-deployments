@@ -17,13 +17,13 @@ services:
         image: promiseqube.azurecr.io/qube-mediamtx:0.0.1
         network_mode: host
         restart: always
-    # camera-manager:
-    #     container_name: camera-manager
-    #     image: promiseqube.azurecr.io/camera-manager:0.0.1-a
-    #     network_mode: host
-    #     # depends_on:
-    #     #     - redis-stack
-    #     restart: always
+    camera-manager:
+        container_name: camera-manager
+        image: promiseqube.azurecr.io/camera-manager:0.0.1-a
+        network_mode: host
+        depends_on:
+            - redis-stack
+        restart: always
         
 volumes:
     redis-data:
