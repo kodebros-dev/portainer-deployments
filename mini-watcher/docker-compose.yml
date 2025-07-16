@@ -27,6 +27,8 @@ services:
   
   camera-manager:
     image: promiseqube.azurecr.io/camera-manager:0.0.1-b
+    networks:
+      - host
     ports:
       - 9999:9999
     deploy:
@@ -35,7 +37,14 @@ services:
       placement:
         constraints:
           - node.role == manager
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
 
 volumes:
   redis_data:
 
+networks:
+  host:
+    external: true
+    name: host
