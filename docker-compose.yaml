@@ -1,9 +1,9 @@
 services:
-    # nginx:
-    #   container_name: nginx
-    #   image: nginx:latest
-    #   network_mode: host
-    #   restart: always
+    nginx:
+      container_name: nginx
+      image: nginx:latest
+      network_mode: host
+      restart: always
       
     redis-stack:
         container_name: qube-redis
@@ -19,11 +19,12 @@ services:
         restart: always
     camera-manager:
         container_name: camera-manager
-        image: promiseqube.azurecr.io/camera-manager:0.0.1-a
+        image: promiseqube.azurecr.io/camera-manager:0.0.1-b
         network_mode: host
         depends_on:
             - redis-stack
         restart: always
-        
+
+
 volumes:
     redis-data:
