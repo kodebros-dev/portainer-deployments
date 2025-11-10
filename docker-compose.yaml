@@ -1,30 +1,100 @@
 services:
-    nginx:
-      container_name: nginx
-      image: nginx:latest
-      network_mode: host
-      restart: always
-      
-    # redis-stack:
-    #     container_name: qube-redis
-    #     image: promiseqube.azurecr.io/qube-redis:0.0.1
-    #     network_mode: host
-    #     volumes:
-    #         - redis-data:/data # Persistent data storage
-    #     restart: always
+    redis-stack:
+        container_name: qube-redis
+        image: promiseqube.azurecr.io/qube-redis:0.0.3
+        network_mode: host
+        volumes:
+            - qube-redis-data:/data
+        restart: always
+
     mediamtx:
         container_name: qube-mediamtx
         image: promiseqube.azurecr.io/qube-mediamtx:0.0.1
         network_mode: host
+        volumes:
+            - qube-recordings:/recordings
         restart: always
-    # camera-manager:
-    #     container_name: camera-manager
-    #     image: promiseqube.azurecr.io/camera-manager:0.0.1-a
-    #     network_mode: host
-    #     depends_on:
-    #         - redis-stack
-    #     restart: always
 
+    nginx:
+        container_name: qube-nginx
+        image: promiseqube.azurecr.io/qube-nginx:0.0.1
+        network_mode: host
+        volumes:
+            - qube-recordings:/data
+        restart: always
+
+    heartbeat-agent:
+        container_name: qube-heartbeat
+        image: promiseqube.azurecr.io/heartbeat-agent:1.2.7
+        env_file: stack.env
+        network_mode: host
+        volumes:
+            - /etc/resolv.conf:/etc/resolv.conf
+        restart: always
+
+    healthcheck:
+        container_name: qube-healthcheck
+        image: promiseqube.azurecr.io/healthcheck:1.2.0
+        env_file: stack.env
+        network_mode: host
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - /etc/resolv.conf:/etc/resolv.conf
+            - /proc:/proc
+        restart: always
+
+    cloud-streamer:
+        container_name: cloud-streamer
+        image: promiseqube.azurecr.io/cloud-streamer:1.2.7
+        env_file: stack.env
+        network_mode: host
+        volumes:
+            - /etc/resolv.conf:/etc/resolv.conf
+        depends_on:
+            - mediamtx
+            - redis-stack
+        restart: always
+
+    camera-manager:
+        container_name: camera-manager
+        image: promiseqube.azurecr.io/camera-manager:1.2.2
+        network_mode: host
+        volumes:
+            - /etc/resolv.conf:/etc/resolv.conf
+        depends_on:
+            - redis-stack
+        restart: always
+
+    backend-lite:
+        container_name: qube-backend-lite
+        image: promiseqube.azurecr.io/backend-lite:1.2.7
+        network_mode: host
+        env_file: stack.env
+        volumes:
+            # System mounts
+            - /var/run/docker.sock:/var/run/docker.sock
+            - /etc/resolv.conf:/etc/resolv.conf
+            # Project mounts
+            - qube-logs:/backend/logs
+            - qube-recordings:/backend/recordings
+        depends_on:
+            - redis-stack
+            - mediamtx
+        restart: always
+        logging:
+            options:
+                max-size: "10m"
+
+    ui-lite:
+        container_name: qube-ui-lite
+        image: promiseqube.azurecr.io/qube-ui-lite:1.2.1
+        env_file: stack.env
+        network_mode: host
+        depends_on:
+            - redis-stack
+        restart: always
 
 volumes:
-    redis-data:
+    qube-redis-data:
+    qube-logs:
+    qube-recordings:
